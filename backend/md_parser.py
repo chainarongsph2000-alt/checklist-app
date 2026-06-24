@@ -45,6 +45,19 @@ def preprocess_checkboxes(text: str) -> str:
     return CHECKBOX_RE.sub(_checkbox_replacer, text)
 
 
+def preprocess_wikilinks(text: str) -> str:
+    """
+    Convert \\| to | inside wikilinks [[...\\|...]] before markdown parsing.
+    
+    Obsidian uses \\| to escape pipe in wikilinks inside tables.
+    Without this preprocessing, the markdown 'tables' extension replaces
+    \\| with STX/ETX placeholders (\\x02klzzwxh:XXXX\\x03), breaking the
+    WikilinkPattern's ability to split on |.
+    """
+    WIKILINK_PIPE_RE = re.compile(r'(\[\[[^\]]+?)\\\|([^\]]+\]\])')
+    return WIKILINK_PIPE_RE.sub(r'\1|\2', text)
+
+
 # ─── Main conversion ───────────────────────────────────────
 def md_to_html(text: str) -> str:
     """
@@ -56,8 +69,9 @@ def md_to_html(text: str) -> str:
     if not text:
         return ""
 
-    # Pre-process checkboxes (before markdown parsing)
+    # Pre-process checkboxes & wikilink pipe escapes (before markdown parsing)
     text = preprocess_checkboxes(text)
+    text = preprocess_wikilinks(text)
 
     # Configure markdown extensions
     md = markdown.Markdown(
