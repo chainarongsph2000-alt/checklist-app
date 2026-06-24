@@ -7,3 +7,7 @@ venv/
 dist/
 build/
 .DS_Store
+# Runtime data
+data/checklist.db
+data/checklist.db-wal
+data/checklist.db-shm

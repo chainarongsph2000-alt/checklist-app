@@ -8,7 +8,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 
 from .config import APP_TITLE, validate_paths
-from .routers import checklists, law, search
+from .routers import checklists, law, search, dashboard
 
 # ─── Logging ────────────────────────────────────────────────
 logging.basicConfig(
@@ -38,6 +38,7 @@ else:
 app.include_router(checklists.router)
 app.include_router(law.router)
 app.include_router(search.router)
+app.include_router(dashboard.router)
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -47,6 +48,15 @@ async def root():
     if index_path.exists():
         return index_path.read_text(encoding='utf-8')
     return "<h1>Checklist App — วาง index.html ในโฟลเดอร์ frontend/</h1>"
+
+
+@app.get("/dashboard", response_class=HTMLResponse)
+async def dashboard_page():
+    """Serve the dashboard page."""
+    dashboard_path = FRONTEND_DIR / "dashboard.html"
+    if dashboard_path.exists():
+        return dashboard_path.read_text(encoding='utf-8')
+    return "<h1>Dashboard — ยังไม่ได้สร้าง</h1>"
 
 
 @app.get("/health")

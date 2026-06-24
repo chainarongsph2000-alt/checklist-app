@@ -48,14 +48,33 @@ def preprocess_checkboxes(text: str) -> str:
 def preprocess_wikilinks(text: str) -> str:
     """
     Convert \\| to | inside wikilinks [[...\\|...]] before markdown parsing.
-    
     Obsidian uses \\| to escape pipe in wikilinks inside tables.
-    Without this preprocessing, the markdown 'tables' extension replaces
-    \\| with STX/ETX placeholders (\\x02klzzwxh:XXXX\\x03), breaking the
-    WikilinkPattern's ability to split on |.
     """
     WIKILINK_PIPE_RE = re.compile(r'(\[\[[^\]]+?)\\\|([^\]]+\]\])')
     return WIKILINK_PIPE_RE.sub(r'\1|\2', text)
+
+
+# ─── Heading ID helpers ────────────────────────────────────
+def _clean_heading_id(text: str) -> str:
+    """Generate a clean HTML id from heading text."""
+    sid = text.strip()
+    sid = sid.replace(' — ', '-').replace(' ', '-')
+    sid = re.sub(r'[\-]+', '-', sid)
+    sid = re.sub(r'[^\w\-ก-๙]', '', sid, flags=re.UNICODE)
+    sid = sid.strip('-')
+    return sid[:60]
+
+
+def _add_heading_ids(html: str) -> str:
+    """Add id attributes to h2/h3 tags for anchor linking."""
+    def _replacer(m):
+        tag = m.group(1)
+        content = m.group(2)
+        hid = _clean_heading_id(content)
+        if not hid:
+            return m.group(0)
+        return f'<h{tag} id="{hid}">{content}</h{tag}>'
+    return re.sub(r'<h([23])>(.*?)</h\1>', _replacer, html)
 
 
 # ─── Main conversion ───────────────────────────────────────
@@ -65,6 +84,7 @@ def md_to_html(text: str) -> str:
     - Wikilinks [[Link|Text]]
     - Checkboxes - [ ] / - [x]
     - Full markdown support (tables, code blocks, etc.)
+    - Heading IDs for anchor linking
     """
     if not text:
         return ""
@@ -83,19 +103,24 @@ def md_to_html(text: str) -> str:
         ]
     )
 
-    return md.convert(text)
+    html = md.convert(text)
+
+    # Post-process: add anchor IDs to h2/h3 for scroll-to-section
+    html = _add_heading_ids(html)
+
+    return html
 
 
 def load_md(filepath) -> dict:
     """
     Load .md file and return structured dict.
-    
+
     Returns:
-        dict with keys: title, html, raw, tags, links, filename
+        dict with keys: title, html, raw, tags, links, filename, toc
     """
     from pathlib import Path
     filepath = Path(filepath)
-    
+
     raw = filepath.read_text(encoding='utf-8')
     html = md_to_html(raw)
 
@@ -104,13 +129,23 @@ def load_md(filepath) -> dict:
     title_match = re.search(r'^# (.+)$', raw, re.MULTILINE)
     if title_match:
         title = title_match.group(1).strip()
-    
+
+    # Extract headings for TOC
+    headings = re.findall(r'^(#{2,3}) (.+)$', raw, re.MULTILINE)
+    toc = []
+    for level, text in headings:
+        toc.append({
+            "level": len(level),
+            "text": text.strip(),
+            "id": _clean_heading_id(text.strip()),
+        })
+
     # Extract tags (#tag)
     tags = re.findall(r'#([\wก-เ]+)', raw)
-    
+
     # Extract wikilinks
     links = re.findall(r'\[\[([^\]|]+)(?:\|[^\]|]+)?\]\]', raw)
-    
+
     return {
         "title": title,
         "html": html,
@@ -118,4 +153,5 @@ def load_md(filepath) -> dict:
         "tags": tags,
         "links": links,
         "filename": filepath.stem,
+        "toc": toc,
     }
