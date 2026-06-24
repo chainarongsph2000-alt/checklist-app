@@ -5,7 +5,7 @@ from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
 from pathlib import Path
 import os
-from ..config import VAULT_PATH, LAW_DIRS
+from ..config import VAULT_PATH, LAW_DIRS, CHECKLIST_DIR
 from ..md_parser import load_md
 
 router = APIRouter(prefix="/api", tags=["law"])
@@ -48,6 +48,8 @@ def _find_law_file(law_path: str) -> Path | None:
     ]
     for subdir in LAW_DIRS:
         candidates.append(subdir / f"{law_path_clean}.md")
+    # Also search in checklist directory (00-สารบัญ etc.)
+    candidates.append(CHECKLIST_DIR / f"{law_path_clean}.md")
     
     for candidate in candidates:
         try:
