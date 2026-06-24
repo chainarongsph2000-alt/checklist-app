@@ -69,11 +69,14 @@ body {
 }
 
 /* ─── Layout ─────────────────────────────────────────── */
-.main-grid { display: grid; grid-template-columns: 1fr 350px; gap: 1rem; margin-top: 1rem; }
+.main-grid { display: grid; grid-template-columns: 1fr 480px; gap: 1rem; margin-top: 1rem; }
 @media (max-width: 768px) {
     .main-grid { grid-template-columns: 1fr; }
     .nav-select, .nav-search { max-width: 100%; }
     .hamburger { display: block; }
+}
+@media (min-width: 1200px) {
+    .main-grid { grid-template-columns: 1fr 550px; }
 }
 
 /* ─── Cards ──────────────────────────────────────────── */
@@ -149,17 +152,17 @@ body {
 /* ─── Law panel ──────────────────────────────────────── */
 .law-panel { position: sticky; top: 80px; }
 .law-content {
-    font-size: 0.88rem;
-    line-height: 1.6;
-    max-height: 70vh;
+    font-size: 0.95rem;
+    line-height: 1.8;
+    max-height: 85vh;
     overflow-y: auto;
 }
-.law-content h1 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+.law-content h1 { font-size: 1.2rem; margin-bottom: 0.5rem; }
 .law-content h2 { font-size: 1rem; margin: 0.75rem 0 0.3rem; }
 .law-content h3 { font-size: 0.95rem; margin: 0.5rem 0 0.2rem; }
 .law-content a { color: var(--accent); }
-.law-content table { width: 100%; border-collapse: collapse; margin: 0.5rem 0; font-size: 0.82rem; }
-.law-content td, .law-content th { border: 1px solid var(--border); padding: 0.3rem 0.5rem; }
+.law-content table { width: 100%; border-collapse: collapse; margin: 0.5rem 0; font-size: 0.88rem; }
+.law-content td, .law-content th { border: 1px solid var(--border); padding: 0.4rem 0.6rem; }
 .law-content tr:nth-child(even) { background: #0f172a; }
 .law-content .check-item { pointer-events: none; }
 
