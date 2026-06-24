@@ -1,0 +1,14 @@
+services:
+  checklist-app:
+    build: .
+    container_name: checklist-app
+    ports:
+      - "8888:8888"
+    volumes:
+      # Mount Obsidian vault for live access
+      - /root/Documents/obsidian-vault:/root/Documents/obsidian-vault:ro
+      # Mount frontend for hot-reload (dev only)
+      - ./frontend:/app/frontend
+    restart: unless-stopped
+    environment:
+      - TZ=Asia/Bangkok

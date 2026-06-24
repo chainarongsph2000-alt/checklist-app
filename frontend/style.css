@@ -1,0 +1,243 @@
+/* ─── Checklist App — Theme & Layout ──────────────────── */
+:root {
+    --bg: #0f172a;
+    --card: #1e293b;
+    --border: #334155;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --accent: #3b82f6;
+    --success: #22c55e;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: 'Noto Sans Thai', 'Sarabun', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+}
+.container { max-width: 1100px; margin: 0 auto; padding: 1rem; }
+
+/* ─── Nav ────────────────────────────────────────────── */
+.nav {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+.nav-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.nav-title span { color: var(--accent); }
+.nav-select {
+    flex: 1;
+    max-width: 350px;
+    padding: 0.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 0.95rem;
+}
+.nav-search {
+    flex: 1;
+    max-width: 300px;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 0.9rem;
+}
+.nav-search:focus { outline: none; border-color: var(--accent); }
+.hamburger {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--text);
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+/* ─── Layout ─────────────────────────────────────────── */
+.main-grid { display: grid; grid-template-columns: 1fr 350px; gap: 1rem; margin-top: 1rem; }
+@media (max-width: 768px) {
+    .main-grid { grid-template-columns: 1fr; }
+    .nav-select, .nav-search { max-width: 100%; }
+    .hamburger { display: block; }
+}
+
+/* ─── Cards ──────────────────────────────────────────── */
+.card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+}
+.card-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.card-title .badge {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    font-weight: 600;
+}
+.badge-green { background: #166534; color: #86efac; }
+.badge-yellow { background: #854d0e; color: #fde68a; }
+.badge-red { background: #991b1b; color: #fca5a5; }
+
+/* ─── Checkbox items ─────────────────────────────────── */
+.check-item { margin-right: 0.5rem; transform: scale(1.2); cursor: pointer; }
+.check-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.4rem 0;
+    cursor: pointer;
+    border-bottom: 1px solid #1e293b;
+    font-size: 0.92rem;
+    line-height: 1.5;
+}
+.check-label:last-child { border-bottom: none; }
+.check-label.passed { color: var(--success); }
+.check-label.failed { color: var(--danger); }
+.check-label .law-link {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+/* ─── Summary bar ────────────────────────────────────── */
+.summary-bar {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding: 0.75rem;
+    background: var(--bg);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+.summary-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+}
+.summary-num {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+/* ─── Law panel ──────────────────────────────────────── */
+.law-panel { position: sticky; top: 80px; }
+.law-content {
+    font-size: 0.88rem;
+    line-height: 1.6;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+.law-content h1 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+.law-content h2 { font-size: 1rem; margin: 0.75rem 0 0.3rem; }
+.law-content h3 { font-size: 0.95rem; margin: 0.5rem 0 0.2rem; }
+.law-content a { color: var(--accent); }
+.law-content table { width: 100%; border-collapse: collapse; margin: 0.5rem 0; font-size: 0.82rem; }
+.law-content td, .law-content th { border: 1px solid var(--border); padding: 0.3rem 0.5rem; }
+.law-content tr:nth-child(even) { background: #0f172a; }
+.law-content .check-item { pointer-events: none; }
+
+/* ─── Search results dropdown ────────────────────────── */
+.search-wrapper { position: relative; flex: 1; max-width: 300px; }
+.search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    max-height: 400px;
+    overflow-y: auto;
+    display: none;
+    z-index: 200;
+}
+.search-results.show { display: block; }
+.search-item {
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.85rem;
+}
+.search-item:hover { background: var(--border); }
+.search-item .file { color: var(--muted); font-size: 0.75rem; }
+
+/* ─── Loading ────────────────────────────────────────── */
+.loading { text-align: center; padding: 2rem; color: var(--muted); }
+.spinner::after { content: '⏳'; animation: pulse 1s infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+/* ─── Buttons ────────────────────────────────────────── */
+.btn {
+    padding: 0.4rem 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: opacity 0.2s;
+}
+.btn:hover { opacity: 0.85; }
+.btn-primary { background: var(--accent); color: white; }
+.btn-success { background: var(--success); color: white; }
+.btn-danger { background: var(--danger); color: white; }
+.btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border); }
+
+/* ─── Empty state ────────────────────────────────────── */
+.empty-state { text-align: center; padding: 3rem; color: var(--muted); }
+.empty-state h2 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+
+/* ─── Modal ──────────────────────────────────────────── */
+.modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+    display: none; align-items: center; justify-content: center; z-index: 300;
+}
+.modal-overlay.show { display: flex; }
+.modal {
+    background: var(--card); border-radius: 12px; padding: 1.5rem;
+    max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto;
+}
+.modal textarea {
+    width: 100%; min-height: 200px;
+    background: var(--bg); color: var(--text);
+    border: 1px solid var(--border); border-radius: 8px;
+    padding: 0.75rem; font-family: inherit; font-size: 0.88rem;
+}
+.modal-actions { display: flex; gap: 0.5rem; margin-top: 1rem; justify-content: flex-end; }
+
+/* ─── Print ──────────────────────────────────────────── */
+@media print {
+    .nav, .law-panel, .btn, .btn-primary, .btn-success, .btn-danger {
+        display: none !important;
+    }
+    .main-grid { grid-template-columns: 1fr; }
+    body { background: white; color: black; }
+    .card { background: white; border: 1px solid #ccc; }
+    .check-label { border-color: #ddd; }
+}

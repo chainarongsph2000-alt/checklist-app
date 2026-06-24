@@ -1,43 +1,65 @@
-FastAPI Backend — อ่าน checklist จาก Obsidian vault
+# 📋 Checklist ตรวจแบบอาคาร — เทศบาลตำบลเมืองเก่า
 
-## สิ่งที่ต้องติดตั้ง
+FastAPI + vanilla JS Web App สำหรับตรวจแบบแปลนอาคาร อ่าน checklist จาก Obsidian vault โดยตรง
+
+## 🚀 Quick Start
 
 ```bash
-pip install fastapi uvicorn python-multipart markdown
+# Local dev
+cd checklist-app/backend
+pip install -r requirements.txt
+uvicorn backend.main:app --host 0.0.0.0 --port 8888 --reload
+
+# หรือ Docker
+docker compose up -d
 ```
 
-## โครงสร้าง
+เปิด browser → [http://localhost:8888](http://localhost:8888)
+
+## 🏗️ สถาปัตยกรรม
 
 ```
 checklist-app/
 ├── backend/
-│   ├── main.py          ← FastAPI server
-│   ├── checklist.py     ← โหลด/แปลง .md → JSON
-│   └── templates/       ← (ถ้าต้องการ)
+│   ├── main.py          ← FastAPI app + router registration
+│   ├── config.py        ← Config paths & validation
+│   ├── md_parser.py     ← Markdown → HTML (wikilinks + checkboxes)
+│   ├── routers/
+│   │   ├── checklists.py   ← /api/checklists, /api/checklist/{id}
+│   │   ├── law.py          ← /api/law/{path} (sanitized)
+│   │   └── search.py       ← /api/search?q=...
+│   └── requirements.txt
 ├── frontend/
-│   ├── index.html       ← หน้าเลือกประเภท
-│   ├── checklist.html   ← หน้า checklist + check
-│   └── assets/
-│       ├── style.css
-│       └── app.js
-└── data/
-    └── symlink → vault  ← link ไป vault จริง
+│   ├── index.html       ← Main page (slim)
+│   ├── style.css        ← All styles
+│   └── app.js           ← All logic (localStorage persist)
+├── Dockerfile
+├── docker-compose.yml
+└── README.md
 ```
 
-## API endpoints
+## 🔌 API Endpoints
 
 | Method | Path | คำอธิบาย |
 |--------|------|----------|
+| GET | `/` | หน้าเว็บหลัก |
+| GET | `/health` | Health check |
 | GET | `/api/checklists` | รายการ checklist ทั้งหมด |
-| GET | `/api/checklist/{id}` | เนื้อหา checklist ที่เลือก |
-| GET | `/api/search?q=คำค้น` | ค้นหากฎหมายใน vault |
-| GET | `/api/law/{path}` | ดึงเนื้อหากฎหมายที่ link ไป |
+| GET | `/api/checklist/{id}` | เนื้อหา checklist |
+| GET | `/api/law/{path}` | ดึงเนื้อหากฎหมาย (path sanitized) |
+| GET | `/api/search?q=...` | ค้นหากฎหมายใน vault |
 
-## วิธีรัน
+## ✨ Features
 
-```bash
-cd backend
-uvicorn main:app --host 0.0.0.0 --port 8888 --reload
-```
+- ✅ เลือกประเภทอาคาร → แสดง checklist
+- ✅ Check box + localStorage persist (ปิด browser แล้วไม่หาย)
+- ✅ คลิก link → ดูกฎหมายด้านข้าง
+- ✅ ค้นหากฎหมายทุกไฟล์ใน vault
+- ✅ ร่างหนังสือแจ้ง (ผ่าน / ไม่ผ่าน) + คัดลอก
+- ✅ Keyboard shortcuts: `Ctrl+F` → ค้นหา, `ESC` → ปิด modal
+- ✅ Responsive design (mobile-ready)
+- ✅ Docker support
 
-เปิด browser → http://localhost:8888
+## 📝 Source
+
+Vault: `/root/Documents/obsidian-vault/กฎหมาย/`

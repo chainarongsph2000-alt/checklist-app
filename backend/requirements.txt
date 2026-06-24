@@ -1,0 +1,5 @@
+# Checklist App Dependencies
+fastapi>=0.110.0
+uvicorn[standard]>=0.29.0
+markdown>=3.6
+python-multipart>=0.0.9
