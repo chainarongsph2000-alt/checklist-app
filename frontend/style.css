@@ -69,14 +69,14 @@ body {
 }
 
 /* ─── Layout ─────────────────────────────────────────── */
-.main-grid { display: grid; grid-template-columns: 1fr 480px; gap: 1rem; margin-top: 1rem; }
+.main-grid { display: grid; grid-template-columns: 1fr 540px; gap: 1.25rem; margin-top: 1rem; align-items: start; }
 @media (max-width: 768px) {
     .main-grid { grid-template-columns: 1fr; }
     .nav-select, .nav-search { max-width: 100%; }
     .hamburger { display: block; }
 }
 @media (min-width: 1200px) {
-    .main-grid { grid-template-columns: 1fr 550px; }
+    .main-grid { grid-template-columns: 1fr 600px; }
 }
 
 /* ─── Cards ──────────────────────────────────────────── */
@@ -150,9 +150,9 @@ body {
 }
 
 /* ─── Law panel ──────────────────────────────────────── */
-.law-panel { position: sticky; top: 80px; }
+.law-panel { position: sticky; top: 80px; align-self: start; }
 .law-content {
-    font-size: 0.95rem;
+    font-size: 1rem;
     line-height: 1.8;
     max-height: 85vh;
     overflow-y: auto;

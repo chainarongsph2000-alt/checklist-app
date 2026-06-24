@@ -39,27 +39,46 @@ def _find_law_file(law_path: str) -> Path | None:
     1. Direct: VAULT_PATH / "กฎหมาย" / law_path
     2. With .md: VAULT_PATH / "กฎหมาย" / f"{law_path}.md"
     3. Subdirs: each LAW_DIR / f"{law_path}.md"
+    4. Fuzzy match by filename (strip anchor #, trailing \\)
     """
-    law_path_clean = law_path.replace(".md", "").strip()
+    # Strip anchor (#section), trailing backslash, .md
+    raw = law_path.strip()
+    # Handle paths that start with # (internal Obsidian refs)
+    if raw.startswith("#"):
+        raw = raw[1:]  # remove leading #
+    clean = raw.split("#")[0].strip().rstrip("\\").replace(".md", "").strip()
     
+    # Try exact path first
     candidates = [
-        VAULT_PATH / "กฎหมาย" / law_path,
-        VAULT_PATH / "กฎหมาย" / f"{law_path_clean}.md",
+        VAULT_PATH / "กฎหมาย" / clean,
+        VAULT_PATH / "กฎหมาย" / f"{clean}.md",
     ]
     for subdir in LAW_DIRS:
-        candidates.append(subdir / f"{law_path_clean}.md")
-    # Also search in checklist directory (00-สารบัญ etc.)
-    candidates.append(CHECKLIST_DIR / f"{law_path_clean}.md")
+        candidates.append(subdir / f"{clean}.md")
+    candidates.append(CHECKLIST_DIR / f"{clean}.md")
     
     for candidate in candidates:
         try:
             resolved = candidate.resolve()
-            # Ensure resolved path is within VAULT_PATH
             if str(resolved).startswith(str(VAULT_PATH.resolve())):
                 if resolved.exists() and resolved.suffix == ".md":
                     return resolved
-        except (ValueError, RuntimeError):
+        except (ValueError, RuntimeError, OSError):
             continue
+    
+    # Fuzzy match: extract just the filename part (after last /) and search vault
+    fname = clean.split("/")[-1] if "/" in clean else clean
+    if fname:
+        try:
+            for md_file in sorted(VAULT_PATH.rglob("*.md")):
+                if fname.lower() == md_file.stem.lower():
+                    return md_file
+            # Try partial match
+            for md_file in sorted(VAULT_PATH.rglob("*.md")):
+                if fname.lower() in md_file.stem.lower():
+                    return md_file
+        except (OSError, RuntimeError):
+            pass
     
     return None
 
