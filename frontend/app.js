@@ -184,7 +184,9 @@ async function showLaw(lawPath) {
     const panel = document.getElementById('lawContent');
     panel.innerHTML = '<div class="loading spinner"> กำลังโหลด...</div>';
     try {
-        const res = await fetch(`/api/law/${encodeURIComponent(lawPath)}`);
+        // Encode each path segment separately (keep / as separator)
+        const encodedPath = lawPath.split('/').map(s => encodeURIComponent(s)).join('/');
+        const res = await fetch(`/api/law/${encodedPath}`);
         if (!res.ok) {
             panel.innerHTML = `<p style="color:var(--danger);">❌ ไม่พบ: ${lawPath}</p>`;
             return;
