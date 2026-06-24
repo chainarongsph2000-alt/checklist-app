@@ -1,20 +1,32 @@
 # 📋 Checklist ตรวจแบบอาคาร — เทศบาลตำบลเมืองเก่า
 
-FastAPI + vanilla JS Web App สำหรับตรวจแบบแปลนอาคาร อ่าน checklist จาก Obsidian vault โดยตรง
+> **Version 1.00** 🚀
+> FastAPI + vanilla JS Web App สำหรับตรวจแบบแปลนอาคาร อ่าน checklist จาก Obsidian vault โดยตรง
+
+---
 
 ## 🚀 Quick Start
 
 ```bash
-# Local dev
-cd checklist-app/backend
-pip install -r requirements.txt
-uvicorn backend.main:app --host 0.0.0.0 --port 8888 --reload
+# 1. ใช้ systemd (auto start เมื่อ reboot)
+systemctl start checklist-app
+systemctl enable checklist-app
 
-# หรือ Docker
-docker compose up -d
+# 2. หรือใช้ Docker
+cd checklist-app && docker compose up -d
 ```
 
 เปิด browser → [http://localhost:8888](http://localhost:8888)
+
+หรือเข้า VPS → [http://61.47.10.164:8888](http://61.47.10.164:8888)
+
+---
+
+## 📖 API Documentation
+
+FastAPI built-in docs:
+- **Swagger UI:** [http://localhost:8888/docs](http://localhost:8888/docs)
+- **OpenAPI JSON:** [http://localhost:8888/openapi.json](http://localhost:8888/openapi.json)
 
 ## 🏗️ สถาปัตยกรรม
 
@@ -32,7 +44,8 @@ checklist-app/
 ├── frontend/
 │   ├── index.html       ← Main page (slim)
 │   ├── style.css        ← All styles
-│   └── app.js           ← All logic (localStorage persist)
+│   ├── app.js           ← All logic (localStorage persist)
+│   └── favicon.svg      ← Tab icon
 ├── Dockerfile
 ├── docker-compose.yml
 └── README.md
@@ -44,6 +57,8 @@ checklist-app/
 |--------|------|----------|
 | GET | `/` | หน้าเว็บหลัก |
 | GET | `/health` | Health check |
+| GET | `/docs` | Swagger API docs |
+| GET | `/openapi.json` | OpenAPI spec |
 | GET | `/api/checklists` | รายการ checklist ทั้งหมด |
 | GET | `/api/checklist/{id}` | เนื้อหา checklist |
 | GET | `/api/law/{path}` | ดึงเนื้อหากฎหมาย (path sanitized) |
@@ -59,6 +74,26 @@ checklist-app/
 - ✅ Keyboard shortcuts: `Ctrl+F` → ค้นหา, `ESC` → ปิด modal
 - ✅ Responsive design (mobile-ready)
 - ✅ Docker support
+- ✅ Systemd service (auto start on reboot)
+- ✅ API docs via Swagger UI
+- ✅ Path traversal protection
+
+## 🛠️ Management
+
+```bash
+# ดูสถานะ service
+systemctl status checklist-app
+
+# รีสตาร์ท
+systemctl restart checklist-app
+
+# ดู logs
+journalctl -u checklist-app -f
+
+# รันแบบ dev
+cd checklist-app/backend
+uvicorn backend.main:app --reload
+```
 
 ## 📝 Source
 
